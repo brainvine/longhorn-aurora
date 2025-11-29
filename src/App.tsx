@@ -7,7 +7,7 @@ import type { ColorTheme } from './utils/auroraRenderer';
 import { exportToPNG, exportToHTML, recordVideo } from './utils/exportUtils';
 
 function App() {
-  const [showWatermark, setShowWatermark] = useState(true);
+  const [showWatermark, setShowWatermark] = useState(false);
   const [speed, setSpeed] = useState(1.0);
   const [theme, setTheme] = useState<ColorTheme>(COLOR_THEMES[0]);
   const [hueShift, setHueShift] = useState(0);
