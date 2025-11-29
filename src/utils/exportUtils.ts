@@ -9,6 +9,7 @@ export interface ExportOptions {
   speed: number;
   hueShift: number;
   saturation: number;
+  showWatermark: boolean;
 }
 
 export function exportToHTML(options: ExportOptions) {
@@ -23,13 +24,20 @@ export function exportToHTML(options: ExportOptions) {
 }
 
 function generateStandaloneHTML(options: ExportOptions): string {
-  const { speed, hueShift, saturation } = options;
+  const { speed, hueShift, saturation, showWatermark } = options;
 
   // Build filter string
   const filters: string[] = [];
   if (hueShift !== 0) filters.push(`hue-rotate(${hueShift}deg)`);
   if (saturation !== 100) filters.push(`saturate(${saturation}%)`);
   const filterStr = filters.length > 0 ? filters.join(' ') : 'none';
+
+  // Watermark HTML (only include if showWatermark is true)
+  const watermarkHTML = showWatermark ? `<div class="watermark">
+    <div class="bold">Windows Code Name "Longhorn"</div>
+    <div>For testing purposes only. Build 4050.private/lab06_demo.031013-1849</div>
+    <div>&copy;, &trade; Microsoft Corp. All rights reserved. User interface is &trade; and trade dress of Microsoft Corp.</div>
+</div>` : '';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -57,11 +65,7 @@ function generateStandaloneHTML(options: ExportOptions): string {
 </head>
 <body>
 <canvas id="c"></canvas>
-<div class="watermark">
-    <div class="bold">Windows Code Name "Longhorn"</div>
-    <div>For testing purposes only. Build 4050.private/lab06_demo.031013-1849</div>
-    <div>&copy;, &trade; Microsoft Corp. All rights reserved. User interface is &trade; and trade dress of Microsoft Corp.</div>
-</div>
+${watermarkHTML}
 <script>
 const SPEED=${speed};
 const FILTER="${filterStr}";
