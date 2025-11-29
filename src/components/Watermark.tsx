@@ -9,8 +9,8 @@ export function Watermark({ visible }: WatermarkProps) {
     <div
       style={{
         position: 'fixed',
-        bottom: '2%',
-        right: '7.5%',
+        bottom: '20px',
+        right: '20px',
         color: '#FFFFFF',
         fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
         fontSize: '8pt',

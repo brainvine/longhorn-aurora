@@ -50,8 +50,8 @@ function generateStandaloneHTML(options: ExportOptions): string {
         canvas { display: block; width: 100%; height: 100%; }
         .watermark {
             position: fixed;
-            bottom: 2%;
-            right: 7.5%;
+            bottom: 20px;
+            right: 20px;
             color: #FFFFFF;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             font-size: 8pt;
