@@ -17,6 +17,7 @@ interface ControlPanelProps {
   onExportHTML: () => void;
   onExportVideo: () => void;
   isRecording: boolean;
+  onReset: () => void;
 }
 
 export function ControlPanel({
@@ -34,6 +35,7 @@ export function ControlPanel({
   onExportHTML,
   onExportVideo,
   isRecording,
+  onReset,
 }: ControlPanelProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
@@ -214,9 +216,9 @@ export function ControlPanel({
             <label style={labelStyle}>Color Theme</label>
             <div
               style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '8px',
+                display: 'flex',
+                gap: '6px',
+                flexWrap: 'wrap',
               }}
             >
               {COLOR_THEMES.map((t) => (
@@ -307,6 +309,26 @@ export function ControlPanel({
               </HoverButton>
             </div>
           </div>
+
+          {/* Reset Button */}
+          <div>
+            <HoverButton
+              style={{
+                ...buttonStyle,
+                width: '100%',
+                background: 'rgba(255, 100, 100, 0.15)',
+                border: '1px solid rgba(255, 100, 100, 0.3)',
+              }}
+              hoverStyle={{
+                ...buttonHoverStyle,
+                background: 'rgba(255, 100, 100, 0.25)',
+                border: '1px solid rgba(255, 100, 100, 0.4)',
+              }}
+              onClick={onReset}
+            >
+              Reset All
+            </HoverButton>
+          </div>
         </div>
       )}
 
@@ -389,6 +411,11 @@ interface ThemeButtonProps {
 function ThemeButton({ theme, isActive, onClick }: ThemeButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
 
+  // Use custom thumbnail colors for Original theme to better represent the actual aurora
+  const thumbnailColors = theme.id === 'original'
+    ? { from: '#7B68EE', to: '#9370DB' }  // More purple/blue like the actual aurora
+    : { from: theme.rays, to: theme.accent };
+
   return (
     <button
       onClick={onClick}
@@ -396,21 +423,23 @@ function ThemeButton({ theme, isActive, onClick }: ThemeButtonProps) {
       onMouseLeave={() => setIsHovered(false)}
       title={theme.name}
       style={{
-        width: '100%',
-        aspectRatio: '1',
-        borderRadius: '8px',
+        width: '28px',
+        height: '28px',
+        borderRadius: '6px',
         border: isActive
           ? '2px solid rgba(255, 255, 255, 0.6)'
           : '1px solid rgba(255, 255, 255, 0.15)',
-        background: `linear-gradient(135deg, ${theme.rays}, ${theme.accent})`,
+        background: `linear-gradient(135deg, ${thumbnailColors.from}, ${thumbnailColors.to})`,
         cursor: 'pointer',
         transition: 'all 0.2s ease',
-        transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+        transform: isHovered ? 'scale(1.1)' : 'scale(1)',
         boxShadow: isActive
-          ? `0 0 12px ${theme.rays}40`
+          ? `0 0 8px ${thumbnailColors.from}40`
           : isHovered
-          ? `0 4px 12px rgba(0, 0, 0, 0.3)`
+          ? `0 4px 8px rgba(0, 0, 0, 0.3)`
           : 'none',
+        padding: 0,
+        flexShrink: 0,
       }}
     />
   );

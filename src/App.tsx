@@ -36,6 +36,14 @@ function App() {
     }
   }, [isRecording]);
 
+  const handleReset = useCallback(() => {
+    setShowWatermark(true);
+    setSpeed(1.0);
+    setTheme(COLOR_THEMES[0]);
+    setHueShift(0);
+    setSaturation(100);
+  }, []);
+
   return (
     <div
       style={{
@@ -68,6 +76,7 @@ function App() {
         onExportHTML={handleExportHTML}
         onExportVideo={handleExportVideo}
         isRecording={isRecording}
+        onReset={handleReset}
       />
 
       {/* GitHub link - subtle in bottom left */}
