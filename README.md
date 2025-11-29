@@ -2,6 +2,8 @@
 
 A faithful 1:1 recreation of the "Aurora" desktop effect from Windows Longhorn Build 4074, ported from the original XAML/BAML definitions to modern HTML5 Canvas + React.
 
+**[Live Demo](https://longhorn-aurora.dannydekruijk.workers.dev/)**
+
 ![Aurora Preview](./public/desktop-aurora.png)
 
 > "An animated aurora effect... mostly seen in Milestone 7 builds. Using the powerful Avalon presentation engine."
