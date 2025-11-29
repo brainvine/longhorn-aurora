@@ -22,7 +22,7 @@ This project takes the logic intended for that original Avalon engine and brings
 ## Features
 
 - **Pixel-perfect recreation** - Based on original XAML gradient stops, timing, and animation curves
-- **6 Color themes** - Original Aurora, Emerald Dream, Sunset Blaze, Deep Ocean, Cyberpunk, Monochrome
+- **6 Color themes and customization** - Original Aurora, Emerald Dream, Sunset Blaze, Deep Ocean, Cyberpunk, Monochrome + HUE and Saturation settings for a custom look
 - **Speed control** - Adjust animation speed from 0.1x to 3x
 - **Watermark toggle** - Show/hide the authentic Longhorn build watermark
 - **Export options**:
@@ -37,9 +37,7 @@ This project takes the logic intended for that original Avalon engine and brings
 This recreation is based on the original XAML paths and animation logic found in the Longhorn system files.
 
 - **Rendering:** HTML5 Canvas API (2D Context) with React
-- **Logic:** TypeScript translation of the original WPF/Avalon coordinate systems and gradients
 - **Performance:** Optimized for 60fps on modern browsers, mimicking the intended efficiency of the original Avalon engine
-- **Build tool:** Vite for fast development and optimized production builds
 
 ## Getting Started
 
@@ -69,11 +67,11 @@ npm run build
 
 ### Standalone Version
 
-Just want the HTML file? Download `longhorn-aurora-standalone.html` from the public folder - it's a single file that runs anywhere with zero dependencies.
+Just want the original HTML file? Download `longhorn-aurora-standalone.html` from the public folder - it's a single file that runs anywhere with zero dependencies.
 
 ## How it Works
 
-The animation consists of multiple layers of gradients and shapes moving in a loop. Just like the original `System.Windows.Client.Shell.View.Aurora` class intended, this script generates the visual flow programmatically rather than playing back a video file.
+The animation consists of multiple layers of gradients and shapes moving in a loop. Just like the original `System.Windows.Client.Shell.View.Aurora` class intended, this script generates the visual flow programmatically.
 
 Key techniques:
 - Pre-compiled `Path2D` objects for maximum rendering performance
@@ -102,15 +100,15 @@ This project is released under the MIT License.
 
 ## Credits
 
-Created by **Danny de Kruijk** - [@brainvine](https://twitter.com/brainvine)
+Created by **Danny de Kruijk** - [@linkedin](https://www.linkedin.com/in/danny-de-kruijk-%E2%9C%AA-14541766)
 
 ### AI Assistance
 
 This project was made possible with significant help from:
-- **Google Gemini 2.5 Pro** - Initial XAML analysis and path extraction
-- **Anthropic Claude Opus 4.5** - React app architecture, TypeScript implementation, and UI design
+- **Google Gemini 3.0 Pro** - Initial XAML analysis and path extraction
+- **Anthropic Claude Opus 4.5** - Finetuning animations, React app architecture, TypeScript implementation, and UI design
 
-Without these AI models, recreating the complex XAML animation logic would have been extraordinarily time-consuming—the original contains dozens of gradient definitions, precise timing curves, and intricate path coordinates.
+Without these AI models, recreating the complex XAML animation logic would have been extraordinarily time-consuming. The original XAML contains dozens of gradient definitions, precise timing curves, and intricate path coordinates.
 
 ---
 
