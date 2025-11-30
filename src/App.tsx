@@ -68,8 +68,8 @@ function App() {
   }, []);
 
   const handleExportHTML = useCallback(() => {
-    exportToHTML({ speed, hueShift, saturation, showWatermark });
-  }, [speed, hueShift, saturation, showWatermark]);
+    exportToHTML({ speed, hueShift, saturation, showWatermark, theme });
+  }, [speed, hueShift, saturation, showWatermark, theme]);
 
   const handleExportVideo = useCallback(() => {
     if (canvasRef.current && !isRecording) {

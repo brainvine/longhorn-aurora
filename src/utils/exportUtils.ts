@@ -5,11 +5,14 @@ export function exportToPNG(canvas: HTMLCanvasElement, filename = 'longhorn-auro
   link.click();
 }
 
+import type { ColorTheme } from './auroraRenderer';
+
 export interface ExportOptions {
   speed: number;
   hueShift: number;
   saturation: number;
   showWatermark: boolean;
+  theme: ColorTheme;
 }
 
 export function exportToHTML(options: ExportOptions) {
@@ -24,7 +27,20 @@ export function exportToHTML(options: ExportOptions) {
 }
 
 function generateStandaloneHTML(options: ExportOptions): string {
-  const { speed, hueShift, saturation, showWatermark } = options;
+  const { speed, hueShift, saturation, showWatermark, theme } = options;
+
+  // Serialize theme colors for use in generated HTML
+  const bg = theme.background;
+  const themeData = JSON.stringify({
+    bg: {
+      base: bg.base,
+      animated1: bg.animated1,
+      animated2: bg.animated2,
+      overlay: bg.overlay,
+    },
+    rays: theme.rays,
+    accent: theme.accent,
+  });
 
   // Build filter string
   const filters: string[] = [];
@@ -69,10 +85,14 @@ ${watermarkHTML}
 <script>
 const SPEED=${speed};
 const FILTER="${filterStr}";
+const T=${themeData};
 const c=document.getElementById('c'),x=c.getContext('2d'),W=800,H=600;
 function h2r(h){if(!h.startsWith('#'))return h;let v=h.slice(1);if(v.length===8){let a=parseInt(v.slice(0,2),16)/255,r=parseInt(v.slice(2,4),16),g=parseInt(v.slice(4,6),16),b=parseInt(v.slice(6,8),16);return\`rgba(\${r},\${g},\${b},\${a})\`}return h}
 function av(t,d,f,to,ar=true){if(d===0)return to;let p;if(ar){let cy=d*2,m=t%cy;p=m<d?m/d:1-(m-d)/d}else p=(t%d)/d;return f+(to-f)*p}
-function cg(b,s,e,st){let g=x.createLinearGradient(b.x+b.w*s.x,b.y+b.h*s.y,b.x+b.w*e.x,b.y+b.h*e.y);st.forEach(s=>g.addColorStop(Math.max(0,Math.min(1,s.o)),h2r(s.c)));return g}
+// Replace ray colors with theme colors
+function rc(c){if(c.includes('9EACFE')||c.includes('B9C3FE')){let a=c.substr(1,2);return'#'+a+T.rays.substr(1)}return c}
+function cg(b,s,e,st){let g=x.createLinearGradient(b.x+b.w*s.x,b.y+b.h*s.y,b.x+b.w*e.x,b.y+b.h*e.y);st.forEach(s=>g.addColorStop(Math.max(0,Math.min(1,s.o)),h2r(rc(s.c))));return g}
+const R=T.rays.substr(1),A=T.accent.substr(1);
 const P={
 f:new Path2D("M 0 0 L 802 0 L 802 603 L 0 603 Z"),
 r7:new Path2D("M 0 0 L 61 0 L 61 426 L 0 426 Z"),
@@ -114,10 +134,10 @@ x.filter=FILTER;
 x.fillStyle="#000";x.fillRect(0,0,c.width,c.height);
 x.scale(c.width/W,c.height/H);
 // Background layers
-x.save();x.translate(-0.5,-1.13);x.fillStyle=cg({x:0,y:0,w:802,h:603},{x:0,y:0.5},{x:1,y:0.5},[{c:"#FF675BE6",o:0},{c:"#ADA182EC",o:0.25},{c:"#FF2212CB",o:0.4},{c:"#F4C800A3",o:0.7}]);x.fill(P.f);x.restore();
-x.save();x.translate(-0.5,-1.13);x.globalAlpha=av(t,5,0,1);x.fillStyle=cg({x:0,y:0,w:802,h:603},{x:0,y:0.5},{x:1,y:0.5},[{c:"#00000000",o:0},{c:"#FFFF6868",o:0.25},{c:"#00000000",o:0.4},{c:"#FF131028",o:0.7}]);x.fill(P.f);x.restore();
-x.save();x.translate(-0.5,-1.13);x.globalAlpha=av(t,6,0,1);x.fillStyle=cg({x:0,y:0,w:802,h:603},{x:0,y:0.5},{x:1,y:0.5},[{c:"#EE000000",o:0},{c:"#00000000",o:0.25},{c:"#FFD400FF",o:0.4},{c:"#00000000",o:0.7}]);x.fill(P.f);x.restore();
-x.save();x.translate(-0.5,-1.13);x.fillStyle=cg({x:0,y:0,w:802,h:603},{x:0.5,y:0},{x:0.5,y:1},[{c:"#FF221797",o:0},{c:"#637B72D9",o:0.67},{c:"#BC776DDE",o:0.82},{c:"#FF221797",o:1}]);x.fill(P.f);x.restore();
+x.save();x.translate(-0.5,-1.13);x.fillStyle=cg({x:0,y:0,w:802,h:603},{x:0,y:0.5},{x:1,y:0.5},[{c:T.bg.base[0],o:0},{c:T.bg.base[1],o:0.25},{c:T.bg.base[2],o:0.4},{c:T.bg.base[3],o:0.7}]);x.fill(P.f);x.restore();
+x.save();x.translate(-0.5,-1.13);x.globalAlpha=av(t,5,0,1);x.fillStyle=cg({x:0,y:0,w:802,h:603},{x:0,y:0.5},{x:1,y:0.5},[{c:T.bg.animated1[0],o:0},{c:T.bg.animated1[1],o:0.25},{c:T.bg.animated1[2],o:0.4},{c:T.bg.animated1[3],o:0.7}]);x.fill(P.f);x.restore();
+x.save();x.translate(-0.5,-1.13);x.globalAlpha=av(t,6,0,1);x.fillStyle=cg({x:0,y:0,w:802,h:603},{x:0,y:0.5},{x:1,y:0.5},[{c:T.bg.animated2[0],o:0},{c:T.bg.animated2[1],o:0.25},{c:T.bg.animated2[2],o:0.4},{c:T.bg.animated2[3],o:0.7}]);x.fill(P.f);x.restore();
+x.save();x.translate(-0.5,-1.13);x.fillStyle=cg({x:0,y:0,w:802,h:603},{x:0.5,y:0},{x:0.5,y:1},[{c:T.bg.overlay[0],o:0},{c:T.bg.overlay[1],o:0.67},{c:T.bg.overlay[2],o:0.82},{c:T.bg.overlay[3],o:1}]);x.fill(P.f);x.restore();
 // Group5
 x.save();x.globalAlpha=av(t,4,1,0.1);
 x.save();x.translate(370.5,2.86);x.fillStyle=cg({x:0,y:0,w:61,h:426},{x:0,y:0.5},{x:1,y:0.5},[{c:"#009EACFE",o:0},{c:"#459EACFE",o:0.3},{c:"#5B9EACFE",o:0.71},{c:"#009EACFE",o:1}]);x.fill(P.r7);x.restore();
