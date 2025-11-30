@@ -89,6 +89,18 @@ export const COLOR_THEMES: ColorTheme[] = [
     rays: '#C0C0C0',
     accent: '#E0E0E0',
   },
+  {
+    id: 'neon',
+    name: 'Neon Nights',
+    background: {
+      base: ['#FFFF00D8', '#AD0433FF', '#FFCC00AA', '#F40022DD'],
+      animated1: ['#00000000', '#FFFF44FF', '#00000000', '#FF1A0033'],
+      animated2: ['#EE000000', '#00000000', '#FF6644FF', '#00000000'],
+      overlay: ['#FF330066', '#634455AA', '#BC5533BB', '#FF220055'],
+    },
+    rays: '#FF00D8',
+    accent: '#0433FF',
+  },
 ];
 
 // XAML base dimensions
