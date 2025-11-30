@@ -1,10 +1,33 @@
-import { useState, useRef, useCallback, useMemo } from 'react';
+import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { AuroraCanvas } from './components/AuroraCanvas';
 import { ControlPanel } from './components/ControlPanel';
 import { Watermark } from './components/Watermark';
 import { COLOR_THEMES } from './utils/auroraRenderer';
 import type { ColorTheme } from './utils/auroraRenderer';
 import { exportToPNG, exportToHTML, recordVideo } from './utils/exportUtils';
+
+const STORAGE_KEY = 'longhorn-aurora-settings';
+
+interface StoredSettings {
+  speed: number;
+  themeId: string;
+  hueShift: number;
+  saturation: number;
+}
+
+function loadSettings(): Partial<StoredSettings> {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  return {};
+}
+
+function saveSettings(settings: StoredSettings) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+  } catch {}
+}
 
 function App() {
   // Check for wallpaper mode via URL parameter
@@ -13,13 +36,30 @@ function App() {
     return params.get('mode') === 'wallpaper';
   }, []);
 
+  // Load initial settings from localStorage
+  const initialSettings = useMemo(() => loadSettings(), []);
+  const initialTheme = useMemo(() =>
+    COLOR_THEMES.find(t => t.id === initialSettings.themeId) || COLOR_THEMES[0],
+    [initialSettings.themeId]
+  );
+
   const [showWatermark, setShowWatermark] = useState(false);
-  const [speed, setSpeed] = useState(1.0);
-  const [theme, setTheme] = useState<ColorTheme>(COLOR_THEMES[0]);
-  const [hueShift, setHueShift] = useState(0);
-  const [saturation, setSaturation] = useState(100);
+  const [speed, setSpeed] = useState(initialSettings.speed ?? 1.0);
+  const [theme, setTheme] = useState<ColorTheme>(initialTheme);
+  const [hueShift, setHueShift] = useState(initialSettings.hueShift ?? 0);
+  const [saturation, setSaturation] = useState(initialSettings.saturation ?? 100);
   const [isRecording, setIsRecording] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Save settings to localStorage whenever they change
+  useEffect(() => {
+    saveSettings({
+      speed,
+      themeId: theme.id,
+      hueShift,
+      saturation,
+    });
+  }, [speed, theme, hueShift, saturation]);
 
   const handleExportPNG = useCallback(() => {
     if (canvasRef.current) {
@@ -43,11 +83,14 @@ function App() {
   }, [isRecording]);
 
   const handleReset = useCallback(() => {
-    setShowWatermark(true);
+    setShowWatermark(false);
     setSpeed(1.0);
     setTheme(COLOR_THEMES[0]);
     setHueShift(0);
     setSaturation(100);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {}
   }, []);
 
   return (
